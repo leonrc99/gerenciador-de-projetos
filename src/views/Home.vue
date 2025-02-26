@@ -77,10 +77,9 @@ h1 {
   color: #555;
 }
 
-/* Responsividade */
 @media (max-width: 600px) {
   .cards-container {
-    grid-template-columns: 1fr; /* 1 coluna em telas menores */
+    grid-template-columns: 1fr;
   }
 }
 </style>
