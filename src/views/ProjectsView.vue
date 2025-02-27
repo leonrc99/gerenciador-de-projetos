@@ -119,7 +119,7 @@ const excluirProjeto = async (id) => {
         <input v-model="projetoSelecionado.ativo" type="checkbox" />
         Ativo
       </label>
-      <button @click="atualizarProjeto">Atualizar</button>
+      <button @click="atualizarProjeto()">Atualizar</button>
       <button @click="projetoSelecionado = null" class="cancelar">Cancelar</button>
     </div>
   </div>

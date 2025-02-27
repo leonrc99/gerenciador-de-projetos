@@ -1,6 +1,8 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { ActivityService } from '../services/activities.service';
+import { ClientesService } from '../services/clientes.service';
+import { ProjectService } from '../services/projects.service';
 
 const atividades = ref([]);
 const novaAtividade = ref({
@@ -10,9 +12,13 @@ const novaAtividade = ref({
 });
 const editando = ref(false);
 const atividadeSelecionada = ref(null);
+const clientes = ref([])
+const projetos = ref([])
 
-const fetchAtividades = async () => {
+const fetchData = async () => {
   atividades.value = await ActivityService.getAll();
+  clientes.value = await ClientesService.getAll();
+  projetos.value = await ProjectService.getAll();
 };
 
 const criarAtividade = async () => {
@@ -22,7 +28,7 @@ const criarAtividade = async () => {
   }
   await ActivityService.create(novaAtividade.value);
   novaAtividade.value = { atividade: '', idCliente: null, idProjeto: null };
-  fetchAtividades();
+  fetchData();
 };
 
 const iniciarEdicao = (atividade) => {
@@ -38,17 +44,17 @@ const atualizarAtividade = async () => {
   await ActivityService.update(atividadeSelecionada.value.id, atividadeSelecionada.value);
   atividadeSelecionada.value = null;
   editando.value = false;
-  fetchAtividades();
+  fetchData();
 };
 
 const deletarAtividade = async (id) => {
   if (confirm('Tem certeza que deseja excluir esta atividade?')) {
     await ActivityService.delete(id);
-    fetchAtividades();
+    fetchData();
   }
 };
 
-onMounted(fetchAtividades);
+onMounted(fetchData);
 </script>
 
 <template>
@@ -57,16 +63,46 @@ onMounted(fetchAtividades);
 
     <div class="form-container">
       <input type="text" v-model="novaAtividade.atividade" placeholder="Atividade">
-      <input type="number" v-model="novaAtividade.idCliente" placeholder="ID Cliente">
-      <input type="number" v-model="novaAtividade.idProjeto" placeholder="ID Projeto">
+      
+      <!-- Dropdown para Clientes -->
+      <select v-model="novaAtividade.idCliente">
+        <option disabled value="">Selecione um Cliente</option>
+        <option v-for="cliente in clientes" :key="cliente.id" :value="cliente.id">
+          {{ cliente.nome }}
+        </option>
+      </select>
+
+      <!-- Dropdown para Projetos -->
+      <select v-model="novaAtividade.idProjeto">
+        <option disabled value="">Selecione um Projeto</option>
+        <option v-for="projeto in projetos" :key="projeto.id" :value="projeto.id">
+          {{ projeto.nome }}
+        </option>
+      </select>
+
       <button @click="criarAtividade">Criar Atividade</button>
     </div>
 
     <div v-if="editando" class="edit-container">
       <h3>Editar Atividade</h3>
       <input type="text" v-model="atividadeSelecionada.atividade">
-      <input type="number" v-model="atividadeSelecionada.idCliente">
-      <input type="number" v-model="atividadeSelecionada.idProjeto">
+      
+      <!-- Dropdown para Clientes (Edição) -->
+      <select v-model="atividadeSelecionada.idCliente">
+        <option disabled value="">Selecione um Cliente</option>
+        <option v-for="cliente in clientes" :key="cliente.id" :value="cliente.id">
+          {{ cliente.nome }}
+        </option>
+      </select>
+
+      <!-- Dropdown para Projetos (Edição) -->
+      <select v-model="atividadeSelecionada.idProjeto">
+        <option disabled value="">Selecione um Projeto</option>
+        <option v-for="projeto in projetos" :key="projeto.id" :value="projeto.id">
+          {{ projeto.nome }}
+        </option>
+      </select>
+
       <button @click="atualizarAtividade">Salvar</button>
       <button @click="editando = false">Cancelar</button>
     </div>
@@ -121,10 +157,24 @@ h1 {
   margin-bottom: 20px;
 }
 
-input {
+input,
+select {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+  max-width: 300px;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: white;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none"%3E%3Cpath d="M5 7l5 5 5-5" stroke="%23333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3C/path%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
 }
 
 button {
@@ -135,6 +185,8 @@ button {
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s;
+  width: 100%;
+  max-width: 300px;
 }
 
 button:hover {

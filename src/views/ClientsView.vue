@@ -34,11 +34,6 @@ onMounted(fetchClientes);
 
 // Criar novo cliente
 const adicionarCliente = async () => {
-  if (!clienteNovo.value.nome || !clienteNovo.value.cpf || !clienteNovo.value.email || !clienteNovo.value.telefone) {
-    alert('Preencha todos os campos obrigatórios!');
-    return;
-  }
-
   try {
     await ClientesService.create(clienteNovo.value);
     clienteNovo.value = {
@@ -118,7 +113,6 @@ const excluirCliente = async (id) => {
           <th>CPF</th>
           <th>Email</th>
           <th>Telefone</th>
-          <th>Cidade</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -129,7 +123,6 @@ const excluirCliente = async (id) => {
           <td>{{ cliente.cpf }}</td>
           <td>{{ cliente.email }}</td>
           <td>{{ cliente.telefone }}</td>
-          <td>{{ cliente.endereco.cidade }}</td>
           <td>
             <button @click="selecionarCliente(cliente)">✏️ Editar</button>
             <button @click="excluirCliente(cliente.id)">❌ Excluir</button>
