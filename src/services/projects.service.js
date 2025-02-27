@@ -19,5 +19,9 @@ export const ProjectService = {
 
   async update(id, project) {
     return axios.put(`${API_URL}/${id}`, project)
+  },
+
+  async delete(id) {
+    return axios.delete(`${API_URL}/${id}`)
   }
 }

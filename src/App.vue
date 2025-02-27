@@ -1,5 +1,4 @@
 <script setup>
-import ProjectsView from './views/ProjectsView.vue';
 </script>
 
 
@@ -7,7 +6,9 @@ import ProjectsView from './views/ProjectsView.vue';
   <div class="app-container">
     <div id="nav">
         <router-link to="/">Home</router-link>
+        <router-link to="/clients">Clientes</router-link>
         <router-link to="/projects">Projetos</router-link>
+        <router-link to="/activities">Atividades</router-link>
     </div>
     <router-view></router-view>
   </div>
